@@ -1,22 +1,47 @@
-# Android fstab file.
-# The filesystem that contains the filesystem checker binary (typically /system) cannot
-# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+# Boot
+/boot emmc /dev/block/bootdevice/by-name/boot
+/aboot emmc /dev/block/bootdevice/by-name/aboot  flags=backup=1;subpartitionof=/boot
 
-#TODO: Add 'check' as fs_mgr_flags with data partition.
-# Currently we dont have e2fsck compiled. So fs check would failed.
+# Reco
+/recovery emmc /dev/block/bootdevice/by-name/recovery  flags=backup=1;display=recovery
 
-#<src>                                                <mnt_point>  <type>  <mnt_flags and options>                     <fs_mgr_flags>
-/dev/block/bootdevice/by-name/system    /system      ext4    ro,barrier=1                                wait
-/dev/block/bootdevice/by-name/userdata  /data        ext4    nosuid,nodev,barrier=1,noauto_da_alloc,discard      wait,check,encryptable=/dev/block/bootdevice/by-name/bk1
-/dev/block/bootdevice/by-name/cache     /cache       ext4    noatime,nosuid,nodev,barrier=1,data=ordered    wait,check
-/dev/block/bootdevice/by-name/cust      /cust        ext4    nosuid,nodev,barrier=1                      wait,check
-/devices/soc.0/f9200000.ssusb/f9200000.dwc3/xhci-hcd.0.auto/usb1              /storage/usbotg    vfat    nosuid,nodev         wait,voldmanaged=usbotg:auto
-/devices/soc.0/f9a55000.ehci/usb1       /storage/uicc0     vfat    nosuid,nodev                          wait,voldmanaged=uicc0:auto
-/devices/soc.0/f9a55000.ehci/usb1       /storage/uicc1     vfat    nosuid,nodev                          wait,voldmanaged=uicc1:auto
+# System
+/system ext4 /dev/block/bootdevice/by-name/system
+/data ext4 /dev/block/bootdevice/by-name/userdata flags=encryptable=/dev/block/bootdevice/by-name/bk1
+/cache ext4 /dev/block/bootdevice/by-name/cache
 
-/dev/block/bootdevice/by-name/boot         /boot           emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/recovery     /recovery       emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/recovery2    /recovery2      emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/misc         /misc           emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/persist      /persist        ext4    noatime,nosuid,nodev,barrier=1,data=ordered                     wait,check
+# Modem
+/modem vfat /dev/block/bootdevice/by-name/modem        flags=backup=1;display=modem
+
+# EFS, nvram, calib, imei, mac, keystore
+/fsg emmc /dev/block/bootdevice/by-name/fsg            flags=backup=1;display=nvram
+/modemst1 emmc /dev/block/bootdevice/by-name/modemst1  flags=backup=1;subpartitionof=/fsg
+/modemst2 emmc /dev/block/bootdevice/by-name/modemst2  flags=backup=1;subpartitionof=/fsg
+/persist ext4 /dev/block/bootdevice/by-name/persist    flags=backup=1;subpartitionof=/fsg
+/limits emmc /dev/block/bootdevice/by-name/limits      flags=backup=1;subpartitionof=/fsg
+/devinfo emmc /dev/block/bootdevice/by-name/devinfo      flags=backup=1;subpartitionof=/fsg
+/config emmc /dev/block/bootdevice/by-name/config      flags=backup=1;subpartitionof=/fsg
+
+# FW
+/tz emmc /dev/block/bootdevice/by-name/tz     flags=backup=1;display=firmware_
+/sbl1 emmc /dev/block/bootdevice/by-name/sbl1 flags=backup=1;subpartitionof=/tz
+/sdi emmc /dev/block/bootdevice/by-name/sdi   flags=backup=1;subpartitionof=/tz
+/rpm emmc /dev/block/bootdevice/by-name/rpm   flags=backup=1;subpartitionof=/tz
+/keystore emmc /dev/block/bootdevice/by-name/keystore  flags=backup=1;subpartitionof=/tz
+/pmic emmc /dev/block/bootdevice/by-name/pmic  flags=backup=1;subpartitionof=/tz
+/bluetooth emmc /dev/block/bootdevice/by-name/bluetooth  flags=backup=1;subpartitionof=/tz
+
+# Unknown partitions
+/DDR emmc /dev/block/bootdevice/by-name/DDR   flags=backup=1;display=other_
+/fsc emmc /dev/block/bootdevice/by-name/fsc   flags=backup=1;subpartitionof=/DDR
+/hyp emmc /dev/block/bootdevice/by-name/hyp   flags=backup=1;subpartitionof=/DDR
+/ssd emmc /dev/block/bootdevice/by-name/ssd   flags=backup=1;subpartitionof=/DDR
+/dpo emmc /dev/block/bootdevice/by-name/dpo   flags=backup=1;subpartitionof=/DDR
+/misc emmc /dev/block/bootdevice/by-name/misc flags=backup=1;subpartitionof=/DDR
+/apdp emmc /dev/block/bootdevice/by-name/apdp flags=backup=1;subpartitionof=/DDR
+/msadp emmc /dev/block/bootdevice/by-name/msadp flags=backup=1;subpartitionof=/DDR
+
+# USB OTG
+/usb-otg auto /dev/block/sda1 /dev/block/sda flags=removable;wipeingui;storage;display=USB-OTG
+
 
