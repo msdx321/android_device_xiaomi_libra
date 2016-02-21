@@ -186,6 +186,14 @@ on boot
     exec ln -sf $WAKEUP_GESTURE_FILE /data/wake_gesture
     chown system system /data/wake_gesture
 
+   # torch
+    chown system system /sys/class/leds/led:torch_0/brightness
+    chmod 0666 /sys/class/leds/led:torch_0/brightness
+
+    # Dynamic FPS
+    chown system graphics /sys/class/graphics/fb0/dynamic_fps
+    chmod 0644 /sys/class/graphics/fb0/dynamic_fps
+
 # msm specific files that need to be created on /data
 on post-fs-data
     # Create directory for TZ Apps

@@ -153,7 +153,7 @@ BOARD_USES_QC_TIME_SERVICES := true
 #MALLOC_IMPL := dlmalloc
 
 # CMHW
-BOARD_HARDWARE_CLASS := device/xiaomi/libra/cmhw
+BOARD_HARDWARE_CLASS := device/xiaomi/libra/mkhw
 
 # dt2w
 TARGET_TAP_TO_WAKE_NODE := "/data/wake_gesture"
@@ -206,19 +206,6 @@ TARGET_RECOVERY_QCOM_RTC_FIX := true
 BOARD_SUPPRESS_SECURE_ERASE := true
 TW_EXTERNAL_STORAGE_PATH := "/usb-otg"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "usb-otg"
-
-# Enable dex pre-opt to speed up initial boot
-ifneq ($(TARGET_USES_AOSP),true)
-  ifeq ($(HOST_OS),linux)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-      ifneq ($(TARGET_BUILD_VARIANT),user)
-        # Retain classes.dex in APK's for non-user builds
-        DEX_PREOPT_DEFAULT := nostripping
-      endif
-    endif
-  endif
-endif
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
