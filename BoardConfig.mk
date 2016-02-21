@@ -20,8 +20,9 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_BOOTLOADER_BOARD_NAME := libra
+BOOTLOADER_PLATFORM := msm8994
 
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M  androidboot.selinux=disabled
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M  androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS := --dt device/xiaomi/libra/dt.img
@@ -34,6 +35,7 @@ BOARD_FLASH_BLOCK_SIZE := 131072 #262144 #(BOARD_KERNEL_PAGESIZE * 64)
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 TARGET_PREBUILT_KERNEL := device/xiaomi/libra/kernel
+TARGET_PREBUILT_RECOVERY_KERNEL := device/xiaomi/libra/kernel
 
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 
@@ -66,3 +68,5 @@ TW_EXTERNAL_STORAGE_MOUNT_POINT := "usb-otg"
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += device/xiaomi/libra/sepolicy
+
+BOARD_SEPOLICY_UNION += \
