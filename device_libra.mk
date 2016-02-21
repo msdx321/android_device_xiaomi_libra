@@ -13,10 +13,6 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 PRODUCT_COPY_FILES += \
     device/xiaomi/libra/kernel:kernel
 
-#misc
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/misc,system/etc)
-
 # Bson
 PRODUCT_PACKAGES += \
     libbson
