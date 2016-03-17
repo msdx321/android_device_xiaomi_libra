@@ -78,12 +78,12 @@ BOARD_USE_LEGACY_UI := true
 
 #Kernel
 BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
-#TARGET_KERNEL_SOURCE := kernel/xiaomi/qcom
+#TARGET_KERNEL_SOURCE := kernel/xiaomi/qcomm
 #TARGET_KERNEL_CONFIG := msm8994-perf_defconfig
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M androidboot.selinux=disabled
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x0000000 --ramdisk_offset 0x02000000 --tags_offset 0x00000100 --dt device/xiaomi/libra/dt.img
+BOARD_MKBOOTIMG_ARGS := --dt device/xiaomi/libra/dt.img
 
 #TARGET_PREBUILT_KERNEL := device/xiaomi/libra/kernel
 BOARD_KERNEL_SEPARATED_DT := true
@@ -185,31 +185,27 @@ WPA_SUPPLICANT_VERSION          := VER_0_8_X
 
 #Recovery
 #RECOVERY_VARIANT := twrp
-
+ifneq ($(RECOVERY_VARIANT),twrp)
+#TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/recovery/recovery.fstab
+else
 TW_THEME := portrait_hdpi
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-RECOVERY_GRAPHICS_USE_LINELENGTH := true
+TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/twrp/twrp.fstab
+RECOVERY_GRAPHICS_FORCE_USE_LINELENGTH := true
 DEVICE_RESOLUTION := 1080x1920
 RECOVERY_SDCARD_ON_DATA := true
-TW_INCLUDE_CRYPTO := true
-#TW_TARGET_USES_QCOM_BSP := true
-#TW_NEW_ION_HEAP := true
-TW_FLASH_FROM_STORAGE := true
-TW_INTERNAL_STORAGE_PATH := "/data/media/0"
-TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
-BOARD_HAS_NO_REAL_SDCARD := true
-TW_NO_USB_STORAGE := true
-TW_SCREEN_BLANK_ON_BOOT := true
-TW_MAX_BRIGHTNESS := 255
+TW_NEW_ION_HEAP := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
+TW_TARGET_USES_QCOM_BSP := true
+TW_EXTRA_LANGUAGES := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 BOARD_SUPPRESS_SECURE_ERASE := true
-TW_EXTERNAL_STORAGE_PATH := "/usb-otg"
-TW_EXTERNAL_STORAGE_MOUNT_POINT := "usb-otg"
+TW_EXTRA_LANGUAGES := true
+TW_DEFAULT_LANGUAGE := zh_CN
+TW_NO_EXFAT_FUSE := true
+TW_NO_EXFAT := true
+endif
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += device/xiaomi/libra/sepolicy
-
-BOARD_SEPOLICY_UNION += \

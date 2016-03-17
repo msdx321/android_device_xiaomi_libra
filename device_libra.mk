@@ -210,6 +210,10 @@ PRODUCT_PACKAGES += \
     ethertypes \
     libebtc
 
+# Camrera
+PRODUCT_PACKAGES += \
+    Snap
+
 # Keystore
 PRODUCT_PACKAGES += \
     keystore.msm8992
@@ -234,6 +238,8 @@ PRODUCT_PACKAGES += \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
     libOmxVdecHevc \
+    libOmxVdec \
+    libOmxVenc \
     libOmxVidcCommon \
     libstagefrighthw \
     qcmediaplayer
@@ -320,3 +326,7 @@ PRODUCT_PACKAGES += \
     ueventd.goldfish.rc \
     ueventd.qcom.rc \
     fstab.qcom
+
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    BUILD_FINGERPRINT=Xiaomi/libra/libra:5.1.1/LMY47V/6.3.10:user/release-keys \
+    PRIVATE_BUILD_DESC="libra-user 5.1.1 LMY47V 6.3.10 release-keys"

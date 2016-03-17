@@ -1,0 +1,234 @@
+
+project external/jpeg/
+diff --git a/jdatasrc.c b/jdatasrc.c
+index edc752b..3e35b24 100644
+--- a/jdatasrc.c
++++ b/jdatasrc.c
+@@ -52,6 +52,12 @@ init_source (j_decompress_ptr cinfo)
+   src->start_of_file = TRUE;
+ }
+ 
++METHODDEF(void)
++init_mem_source (j_decompress_ptr cinfo)
++{
++  /* no work necessary here */
++}
++
+ 
+ /*
+  * Fill the input buffer --- called whenever buffer is emptied.
+@@ -111,6 +117,25 @@ fill_input_buffer (j_decompress_ptr cinfo)
+   return TRUE;
+ }
+ 
++METHODDEF(boolean)
++fill_mem_input_buffer (j_decompress_ptr cinfo)
++{
++  static JOCTET mybuffer[4];
++
++  /* The whole JPEG data is expected to reside in the supplied memory
++   * buffer, so any request for more data beyond the given buffer size
++   * is treated as an error.
++   */
++  WARNMS(cinfo, JWRN_JPEG_EOF);
++  /* Insert a fake EOI marker */
++  mybuffer[0] = (JOCTET) 0xFF;
++  mybuffer[1] = (JOCTET) JPEG_EOI;
++
++  cinfo->src->next_input_byte = mybuffer;
++  cinfo->src->bytes_in_buffer = 2;
++
++  return TRUE;
++}
+ 
+ /*
+  * Skip data --- used to skip over a potentially large amount of
+@@ -146,6 +171,27 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
+   }
+ }
+ 
++METHODDEF(void)
++skip_mem_input_data (j_decompress_ptr cinfo, long num_bytes)
++{
++  struct jpeg_source_mgr * src = cinfo->src;
++
++  /* Just a dumb implementation for now.  Could use fseek() except
++   * it doesn't work on pipes.  Not clear that being smart is worth
++   * any trouble anyway --- large skips are infrequent.
++   */
++  if (num_bytes > 0) {
++    while (num_bytes > (long) src->bytes_in_buffer) {
++      num_bytes -= (long) src->bytes_in_buffer;
++      (void) (*src->fill_input_buffer) (cinfo);
++      /* note we assume that fill_input_buffer will never return FALSE,
++       * so suspension need not be handled.
++       */
++    }
++    src->next_input_byte += (size_t) num_bytes;
++    src->bytes_in_buffer -= (size_t) num_bytes;
++  }
++}
+ 
+ /*
+  * An additional method that can be provided by data source modules is the
+@@ -210,3 +256,37 @@ jpeg_stdio_src (j_decompress_ptr cinfo, FILE * infile)
+   src->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */
+   src->pub.next_input_byte = NULL; /* until buffer loaded */
+ }
++
++/*
++ * Prepare for input from a supplied memory buffer.
++ * The buffer must contain the whole JPEG data.
++ */
++
++GLOBAL(void)
++jpeg_mem_src (j_decompress_ptr cinfo,
++             unsigned char * inbuffer, unsigned long insize)
++{
++  struct jpeg_source_mgr * src;
++
++  if (inbuffer == NULL || insize == 0) /* Treat empty input as fatal error */
++    ERREXIT(cinfo, JERR_INPUT_EMPTY);
++
++  /* The source object is made permanent so that a series of JPEG images
++   * can be read from the same buffer by calling jpeg_mem_src only before
++   * the first one.
++   */
++  if (cinfo->src == NULL) {    /* first time for this JPEG object? */
++    cinfo->src = (struct jpeg_source_mgr *)
++      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
++                                 SIZEOF(struct jpeg_source_mgr));
++  }
++
++  src = cinfo->src;
++  src->init_source = init_mem_source;
++  src->fill_input_buffer = fill_mem_input_buffer;
++  src->skip_input_data = skip_mem_input_data;
++  src->resync_to_restart = jpeg_resync_to_restart; /* use default method */
++  src->term_source = term_source;
++  src->bytes_in_buffer = (size_t) insize;
++  src->next_input_byte = (JOCTET *) inbuffer;
++}
+diff --git a/jpeglib.h b/jpeglib.h
+index 07e6872..fe8b454 100644
+--- a/jpeglib.h
++++ b/jpeglib.h
+@@ -900,6 +900,7 @@ typedef JMETHOD(boolean, jpeg_marker_parser_method, (j_decompress_ptr cinfo));
+ #define jpeg_destroy_decompress	jDestDecompress
+ #define jpeg_stdio_dest		jStdDest
+ #define jpeg_stdio_src		jStdSrc
++#define jpeg_mem_src            jMemSrc
+ #define jpeg_set_defaults	jSetDefaults
+ #define jpeg_set_colorspace	jSetColorspace
+ #define jpeg_default_colorspace	jDefColorspace
+@@ -974,6 +975,11 @@ EXTERN(void) jpeg_destroy_decompress JPP((j_decompress_ptr cinfo));
+ EXTERN(void) jpeg_stdio_dest JPP((j_compress_ptr cinfo, FILE * outfile));
+ EXTERN(void) jpeg_stdio_src JPP((j_decompress_ptr cinfo, FILE * infile));
+ 
++/* Data source manager: memory buffers. */
++EXTERN(void) jpeg_mem_src JPP((j_decompress_ptr cinfo,
++                             unsigned char * inbuffer,
++                             unsigned long insize));
++
+ /* Default parameter setup for compression */
+ EXTERN(void) jpeg_set_defaults JPP((j_compress_ptr cinfo));
+ /* Compression parameter setup aids */
+
+project frameworks/native/
+diff --git a/libs/binder/IPCThreadState.cpp b/libs/binder/IPCThreadState.cpp
+index ef88181..3f4eee6 100644
+--- a/libs/binder/IPCThreadState.cpp
++++ b/libs/binder/IPCThreadState.cpp
+@@ -685,7 +685,7 @@ status_t IPCThreadState::clearDeathNotification(int32_t handle, BpBinder* proxy)
+ 
+ IPCThreadState::IPCThreadState()
+     : mProcess(ProcessState::self()),
+-      mMyThreadId(gettid()),
++      mMyThreadId(androidGetTid()),
+       mStrictModePolicy(0),
+       mLastTransactionBinderFlags(0)
+ {
+diff --git a/services/sensorservice/SensorDevice.cpp b/services/sensorservice/SensorDevice.cpp
+index dd1bccf..1a26323 100644
+--- a/services/sensorservice/SensorDevice.cpp
++++ b/services/sensorservice/SensorDevice.cpp
+@@ -309,7 +309,8 @@ status_t SensorDevice::setDelay(void* ident, int handle, int64_t samplingPeriodN
+ 
+ int SensorDevice::getHalDeviceVersion() const {
+     if (!mSensorDevice) return -1;
+-    return mSensorDevice->common.version;
++    //return mSensorDevice->common.version;
++    return 1;
+ }
+ 
+ status_t SensorDevice::flush(void* ident, int handle) {
+
+project hardware/qcom/bt/
+diff --git a/msm8992/libbt-vendor/include/hw_rome.h b/msm8992/libbt-vendor/include/hw_rome.h
+index 79e17d9..b63c9e4 100644
+--- a/msm8992/libbt-vendor/include/hw_rome.h
++++ b/msm8992/libbt-vendor/include/hw_rome.h
+@@ -155,14 +155,14 @@
+ #define ROME_NVM_TLV_1_0_3_PATH         "/system/etc/firmware/nvm_tlv_1.3.bin"
+ #define ROME_RAMPATCH_TLV_2_0_1_PATH    "/system/etc/firmware/rampatch_tlv_2.1.tlv"
+ #define ROME_NVM_TLV_2_0_1_PATH         "/system/etc/firmware/nvm_tlv_2.1.bin"
+-#define ROME_RAMPATCH_TLV_3_0_0_PATH    "/vendor/firmware/btfw30.tlv"
+-#define ROME_NVM_TLV_3_0_0_PATH         "/vendor/firmware/btnv30.bin"
+-//#define ROME_RAMPATCH_TLV_3_0_0_PATH    "/system/etc/firmware/rampatch_tlv_3.0.tlv"
+-//#define ROME_NVM_TLV_3_0_0_PATH         "/system/etc/firmware/nvm_tlv_3.0.bin"
+-#define ROME_RAMPATCH_TLV_3_0_2_PATH    "/vendor/firmware/btfw32.tlv"
+-#define ROME_NVM_TLV_3_0_2_PATH         "/vendor/firmware/btnv32.bin"
+-//#define ROME_RAMPATCH_TLV_3_0_2_PATH    "/system/etc/firmware/rampatch_tlv_3.2.tlv"
+-//#define ROME_NVM_TLV_3_0_2_PATH         "/system/etc/firmware/nvm_tlv_3.2.bin"
++//#define ROME_RAMPATCH_TLV_3_0_0_PATH    "/vendor/firmware/btfw30.tlv"
++//#define ROME_NVM_TLV_3_0_0_PATH         "/vendor/firmware/btnv30.bin"
++#define ROME_RAMPATCH_TLV_3_0_0_PATH    "/system/etc/firmware/rampatch_tlv_3.0.tlv"
++#define ROME_NVM_TLV_3_0_0_PATH         "/system/etc/firmware/nvm_tlv_3.0.bin"
++//#define ROME_RAMPATCH_TLV_3_0_2_PATH    "/vendor/firmware/btfw32.tlv"
++//#define ROME_NVM_TLV_3_0_2_PATH         "/vendor/firmware/btnv32.bin"
++#define ROME_RAMPATCH_TLV_3_0_2_PATH    "/system/etc/firmware/rampatch_tlv_3.2.tlv"
++#define ROME_NVM_TLV_3_0_2_PATH         "/system/etc/firmware/nvm_tlv_3.2.bin"
+ 
+ #define ROME_3_1_FW_SU  "bprm.cnss.3.1"
+ #define ROME_3_2_FW_SU  "btfwp.cnss.3.2"
+
+project system/core/
+diff --git a/include/utils/AndroidThreads.h b/include/utils/AndroidThreads.h
+index aad1e82..8dd75b0 100644
+--- a/include/utils/AndroidThreads.h
++++ b/include/utils/AndroidThreads.h
+@@ -73,6 +73,9 @@ extern void androidSetCreateThreadFunc(android_create_thread_fn func);
+ // ------------------------------------------------------------------
+ // Extra functions working with raw pids.
+ 
++// Get pid for the current thread.
++extern pid_t androidGetTid();
++
+ #ifdef HAVE_ANDROID_OS
+ // Change the priority AND scheduling group of a particular thread.  The priority
+ // should be one of the ANDROID_PRIORITY constants.  Returns INVALID_OPERATION
+diff --git a/libutils/Threads.cpp b/libutils/Threads.cpp
+index 1e014c6..30e1008 100644
+--- a/libutils/Threads.cpp
++++ b/libutils/Threads.cpp
+@@ -24,6 +24,8 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ 
++#include <cutils/threads.h>
++
+ #if !defined(_WIN32)
+ # include <pthread.h>
+ # include <sched.h>
+@@ -301,6 +303,11 @@ void androidSetCreateThreadFunc(android_create_thread_fn func)
+     gCreateThreadFn = func;
+ }
+ 
++pid_t androidGetTid()
++{
++    return gettid();
++}
++
+ #ifdef HAVE_ANDROID_OS
+ int androidSetThreadPriority(pid_t tid, int pri)
+ {
