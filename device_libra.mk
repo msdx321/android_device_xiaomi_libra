@@ -319,7 +319,6 @@ PRODUCT_PACKAGES += \
     init.qcom.syspart_fixup.sh \
     init.qcom.usb.sh \
     init.qcom.rc \
-    init.qcom.usb.cdrom.rc \
     init.qcom.usb.rc \
     init.recovery.hardware.rc \
     init.target.rc \
