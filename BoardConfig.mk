@@ -25,6 +25,8 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 TARGET_CPU_CORTEX_A53 := true
+ENABLE_CPUSETS := true
+TARGET_USES_64_BIT_BINDER := true
 TARGET_CPU_SMP := true
 
 #some flags to make blobs work
@@ -86,7 +88,7 @@ BOARD_USE_LEGACY_UI := true
 
 #Kernel
 #BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
-TARGET_KERNEL_SOURCE := kernel/xiaomi/librm
+TARGET_KERNEL_SOURCE := kernel/xiaomi/libra
 TARGET_KERNEL_CONFIG := libra_user_defconfig
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M androidboot.selinux=permissive
 BOARD_KERNEL_SEPARATED_DT := true
@@ -116,13 +118,9 @@ BOARD_CACHEIMAGE_PARTITION_SIZE := 402653184 #384M
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 27980184576 #26G
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_FLASH_BLOCK_SIZE := 131072 #262144 #(BOARD_KERNEL_PAGESIZE * 64)
-BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
-
-VSYNC_EVENT_PHASE_OFFSET_NS := 7500000
-SF_VSYNC_EVENT_PHASE_OFFSET_NS := 5000000
 
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 TARGET_INIT_VENDOR_LIB := libinit_msm

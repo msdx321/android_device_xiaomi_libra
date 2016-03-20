@@ -238,6 +238,10 @@ PRODUCT_PACKAGES += \
     libstagefrighthw \
     qcmediaplayer
 
+#rmnetctl
+PRODUCT_PACKAGES += \
+    librmnetctl
+
 # Power
 PRODUCT_PACKAGES += \
     power.msm8992
@@ -309,6 +313,7 @@ PRODUCT_PACKAGES += \
     init.mdm.sh \
     init.qcom.class_core.sh \
     init.qcom.early_boot.sh	\
+    init.qcom.post_boot.sh \
     init.qcom.factory.sh \
     init.qcom.sh \
     init.qcom.syspart_fixup.sh \
