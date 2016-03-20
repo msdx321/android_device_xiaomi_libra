@@ -10,15 +10,13 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
-PRODUCT_COPY_FILES += \
+#PRODUCT_COPY_FILES += \
     device/xiaomi/libra/kernel:kernel \
     device/xiaomi/libra/dt.img:dt.img
 
 #chargeonlymode
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/sbin/chargeonlymode:root/sbin/chargeonlymode \
-    $(LOCAL_PATH)/rootdir/etc/sbin/qcrypto_module.ko:root/sbin/qcrypto_module.ko \
-    $(LOCAL_PATH)/rootdir/etc/sbin/qdrbg_module.ko:root/sbin/qdrbg_module.ko
+    $(LOCAL_PATH)/rootdir/etc/sbin/chargeonlymode:root/sbin/chargeonlymode
 
 #media
 PRODUCT_COPY_FILES += \
@@ -88,7 +86,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/data/qmi_config.xml:system/etc/data/qmi_config.xml 
 
 #wake_gesture
-PRODUCT_COPY_FILES += \
+#PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wakegesture.sh:system/bin/wakegesture.sh
 
 #misc
@@ -190,10 +188,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     gps.msm8992
 
-# Vendor
-PRODUCT_PACKAGES += \
-    qcrilmsgtunnel \
-
 # Graphics
 PRODUCT_PACKAGES += \
     consumerir.msm8992.so \
@@ -279,6 +273,7 @@ PRODUCT_PACKAGES += \
     wpa_supplicant \
     libwpa_client \
     libwcnss_qmi \
+    wcnss_service \
     libQWiFiSoftApCfg \
     libqsap_sdk \
     wpa_supplicant_overlay.conf \
@@ -288,7 +283,7 @@ PRODUCT_PACKAGES += \
     dhcpcd.conf
 
 #wcnss
-PRODUCT_COPY_FILES += \
+#PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wcnss_service:system/bin/wcnss_service
 
 #gps

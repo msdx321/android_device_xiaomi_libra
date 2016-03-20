@@ -85,27 +85,28 @@ USE_OPENGL_RENDERER := true
 BOARD_USE_LEGACY_UI := true
 
 #Kernel
-BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
-#TARGET_KERNEL_SOURCE := kernel/xiaomi/qcomm
-#TARGET_KERNEL_CONFIG := msm8994-perf_defconfig
+#BOARD_CUSTOM_BOOTIMG_MK := device/xiaomi/libra/mkbootimg.mk
+TARGET_KERNEL_SOURCE := kernel/xiaomi/librm
+TARGET_KERNEL_CONFIG := libra_user_defconfig
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M androidboot.selinux=permissive
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_PAGESIZE := 4096
-BOARD_MKBOOTIMG_ARGS := --dt device/xiaomi/libra/dt.img
-
-#TARGET_PREBUILT_KERNEL := device/xiaomi/libra/kernel
 BOARD_KERNEL_SEPARATED_DT := true
-BOARD_HAS_NO_SELECT_BUTTON := true
-
-#BOARD_KERNEL_BASE        := 0x00000000
-#BOARD_KERNEL_PAGESIZE    := 4096
-#BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
-#BOARD_RAMDISK_OFFSET     := 0x02000000
-
+BOARD_KERNEL_BASE        := 0x00000000
+BOARD_KERNEL_PAGESIZE    := 4096
+BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
+BOARD_RAMDISK_OFFSET     := 0x02000000
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 TARGET_USES_UNCOMPRESSED_KERNEL := true
+BOARD_DTBTOOL_ARGS := -2
+BOARD_KERNEL_IMAGE_NAME := Image
+
+WLAN_MODULES:
+	mkdir -p $(KERNEL_MODULES_OUT)/qca_cld
+	mv $(KERNEL_MODULES_OUT)/wlan.ko $(KERNEL_MODULES_OUT)/qca_cld/qca_cld_wlan.ko
+	ln -sf /system/lib/modules/qca_cld/qca_cld_wlan.ko $(TARGET_OUT)/lib/modules/wlan.ko
+
+TARGET_KERNEL_MODULES += WLAN_MODULES
 
 # fix this up by examining /proc/mtd on a running device
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864 #64M
@@ -119,6 +120,9 @@ BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
+
+VSYNC_EVENT_PHASE_OFFSET_NS := 7500000
+SF_VSYNC_EVENT_PHASE_OFFSET_NS := 5000000
 
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 TARGET_INIT_VENDOR_LIB := libinit_msm
@@ -161,10 +165,13 @@ BOARD_USES_QC_TIME_SERVICES := true
 #MALLOC_IMPL := dlmalloc
 
 # CMHW
-BOARD_HARDWARE_CLASS := device/xiaomi/libra/mkhw
+BOARD_HARDWARE_CLASS := \
+    hardware/mokee/mkhw \
+    device/xiaomi/libra/mkhw
 
 # dt2w
-TARGET_TAP_TO_WAKE_NODE := "/data/wake_gesture"
+#TARGET_TAP_TO_WAKE_NODE := "/data/wake_gesture"
+TARGET_TAP_TO_WAKE_NODE := "/sys/devices/soc.0/f9924000.i2c/i2c-2/2-0070/input/input1/wake_gesture"
 
 # Ril
 TARGET_RIL_VARIANT := caf
@@ -188,7 +195,6 @@ WIFI_DRIVER_MODULE_NAME         := "wlan"
 WIFI_DRIVER_FW_PATH_AP          := "ap"
 WIFI_DRIVER_FW_PATH_STA         := "sta"
 TARGET_USES_QCOM_WCNSS_QMI      := true
-TARGET_USES_WCNSS_MAC_ADDR_REV  := true
 WPA_SUPPLICANT_VERSION          := VER_0_8_X
 
 #Recovery
