@@ -134,6 +134,9 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 # 32-bit or 64-bit), the following line should be deleted
 BOARD_QTI_CAMERA_32BIT_ONLY := true
 
+#Light HAL
+TARGET_PROVIDES_LIBLIGHT := true
+
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_SHOW_PERCENTAGE := true
