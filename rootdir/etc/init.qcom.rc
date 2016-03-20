@@ -47,7 +47,7 @@ on init
     symlink /sdcard /storage/sdcard0
 
 on early-boot
-    start wakeup-symlink
+    #start wakeup-symlink
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
     # Allow subsystem (modem etc) debugging
@@ -181,10 +181,10 @@ on boot
     chmod 0660 /data/misc/radio/copy_complete
 
     #doubletap to wake
-    export WAKEUP_GESTURE_FILE=`ls /sys/devices/soc.0/f9924000.i2c/i2c-2/2-0070/input/input?/wake_gesture | head -n 1`
-    chown system system $WAKEUP_GESTURE_FILE
-    exec ln -sf $WAKEUP_GESTURE_FILE /data/wake_gesture
-    chown system system /data/wake_gesture
+    #export WAKEUP_GESTURE_FILE=`ls /sys/devices/soc.0/f9924000.i2c/i2c-2/2-0070/input/input?/wake_gesture | head -n 1`
+    #chown system system $WAKEUP_GESTURE_FILE
+    #exec ln -sf $WAKEUP_GESTURE_FILE /data/wake_gesture
+    #chown system system /data/wake_gesture
 
    # torch
     chown system system /sys/class/leds/led:torch_0/brightness
@@ -773,11 +773,11 @@ service config-zram /system/bin/sh /system/etc/init.qcom.zram.sh
    disabled
    oneshot
 
-service wakeup-symlink /system/bin/sh /system/bin/wakegesture.sh
-    class late_start
-    user root
-    disabled
-    oneshot
+#service wakeup-symlink /system/bin/sh /system/bin/wakegesture.sh
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
 
 on property:sys.boot_completed=1
     start qcom-post-boot
