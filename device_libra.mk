@@ -269,6 +269,10 @@ PRODUCT_PACKAGES += \
     libstlport \
     libcamera_shim
 
+# CameraWrapper
+PRODUCT_PACKAGES += \
+    camera.msm8992
+
 # USB
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
