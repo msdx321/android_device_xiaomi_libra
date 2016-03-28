@@ -164,7 +164,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 BOARD_USES_QC_TIME_SERVICES := true
 
 #Use dlmalloc instead of jemalloc for mallocs
-#MALLOC_IMPL := dlmalloc
+MALLOC_IMPL := dlmalloc
 
 # CMHW
 BOARD_HARDWARE_CLASS := \
