@@ -237,6 +237,12 @@ persist.radio.ignore_dom_time=5
 ro.sys.oosenhance.enable=true
 ro.sys.oosenhance.timer=20000
 
+# IO scheduler
+sys.io.scheduler=bfq
+
+# Dexopt
+ro.sys.fw.dex2oat_thread_count=4
+
 persist.sys.mcd_config_file=/system/etc/mcd_default.conf
 persist.sys.klo=on
 ro.carrier=unknown
