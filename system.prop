@@ -237,6 +237,11 @@ persist.radio.ignore_dom_time=5
 ro.sys.oosenhance.enable=true
 ro.sys.oosenhance.timer=20000
 
+# Camera
+persist.camera.hal.debug.mask=268435456
+persist.camera.HAL3.enabled=0
+persist.camera.gyro.android=1
+
 # IO scheduler
 sys.io.scheduler=bfq
 
@@ -262,7 +267,6 @@ ro.pip.gated=0
 persist.data.qmi.adb_logmask=0
 ro.product.manufacturer=Xiaomi
 keyguard.no_require_sim=true
-ro.product.cuptsm=XIAOMI|ESE|02|01
 persist.radio.apm_sim_not_pwdn=1
 
 # Maintainer
