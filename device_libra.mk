@@ -10,10 +10,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
-#PRODUCT_COPY_FILES += \
-    device/xiaomi/libra/kernel:kernel \
-    device/xiaomi/libra/dt.img:dt.img
-
 #chargeonlymode
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/sbin/chargeonlymode:root/sbin/chargeonlymode \
@@ -69,7 +65,6 @@ PRODUCT_COPY_FILES += \
 #keylayout
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ft5x46.kl:system/usr/keylayout/ft5x46.kl \
-    $(LOCAL_PATH)/Generic.kl:system/usr/keylayout/Generic.kl \
     $(LOCAL_PATH)/atmel-maxtouch.kl:system/usr/keylayout/atmel-maxtouch.kl \
     $(LOCAL_PATH)/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
     $(LOCAL_PATH)/synaptics_dsx_edge.kl:system/usr/keylayout/synaptics_dsx_edge.kl \
@@ -86,10 +81,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/data/dsi_config.xml:system/etc/data/dsi_config.xml \
     $(LOCAL_PATH)/data/netmgr_config.xml:system/etc/data/netmgr_config.xml \
     $(LOCAL_PATH)/data/qmi_config.xml:system/etc/data/qmi_config.xml 
-
-#wake_gesture
-#PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wakegesture.sh:system/bin/wakegesture.sh
 
 #misc
 PRODUCT_COPY_FILES += \
@@ -237,8 +228,7 @@ PRODUCT_PACKAGES += \
     libOmxVdec \
     libOmxVenc \
     libOmxVidcCommon \
-    libstagefrighthw \
-    qcmediaplayer
+    libstagefrighthw
 
 #rmnetctl
 PRODUCT_PACKAGES += \
@@ -247,9 +237,6 @@ PRODUCT_PACKAGES += \
 # Power
 PRODUCT_PACKAGES += \
     power.msm8992
-
-PRODUCT_BOOT_JARS += \
-    qcmediaplayer
 
 # Ril
 PRODUCT_PACKAGES += \
@@ -278,8 +265,6 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     wpa_supplicant \
     libwpa_client \
-    libwcnss_qmi \
-    wcnss_service \
     libQWiFiSoftApCfg \
     libqsap_sdk \
     wpa_supplicant_overlay.conf \
@@ -287,10 +272,6 @@ PRODUCT_PACKAGES += \
     hostapd \
     hostapd_cli \
     dhcpcd.conf
-
-#wcnss
-#PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wcnss_service:system/bin/wcnss_service
 
 #gps
 PRODUCT_COPY_FILES += \
@@ -327,7 +308,3 @@ PRODUCT_PACKAGES += \
     ueventd.goldfish.rc \
     ueventd.qcom.rc \
     fstab.qcom
-
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_FINGERPRINT=Xiaomi/libra/libra:5.1.1/LMY47V/6.3.10:user/release-keys \
-    PRIVATE_BUILD_DESC="libra-user 5.1.1 LMY47V 6.3.10 release-keys"
