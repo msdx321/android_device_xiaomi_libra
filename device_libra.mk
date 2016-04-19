@@ -253,7 +253,10 @@ PRODUCT_PACKAGES += \
 
 #stlport
 PRODUCT_PACKAGES += \
-    libstlport \
+    libstlport
+
+PRODUCT_PACKAGES += \
+    camera.msm8992 \
     libcamera_shim
 
 # USB
