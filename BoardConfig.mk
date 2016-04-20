@@ -71,3 +71,4 @@ TW_EXTERNAL_STORAGE_MOUNT_POINT := "usb-otg"
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
+BOARD_SEPOLICY_DIRS += device/xiaomi/libra/sepolicy
