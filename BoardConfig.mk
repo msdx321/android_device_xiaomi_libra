@@ -4,35 +4,43 @@ USE_CAMERA_STUB := true
 -include vendor/xiaomi/libra/BoardConfigVendor.mk
 
 TARGET_BOARD_PLATFORM := msm8992
+TARGET_BOOTLOADER_BOARD_NAME := msm8992
+ARGET_NO_BOOTLOADER := true
+BOOTLOADER_PLATFORM := msm8994 # use msm8994 LK configuration
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno418
-#TARGET_BOOTLOADER_BOARD_NAME := MSM8992
-TARGET_NO_BOOTLOADER := true
+TARGET_BOARD_SUFFIX := _64
+
+#Arch
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_ABI2 :=
-TARGET_CPU_SMP := true
 TARGET_CPU_VARIANT := generic
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := cortex-a53
-ARCH_ARM_HAVE_TLS_REGISTER := true
-TARGET_BOOTLOADER_BOARD_NAME := libra
-BOOTLOADER_PLATFORM := msm8994
+TARGET_2ND_CPU_VARIANT := cortex-a53.a57
+TARGET_CPU_CORTEX_A53 := true
+ENABLE_CPUSETS := true
+TARGET_USES_64_BIT_BINDER := true
+TARGET_CPU_SMP := true
 
+#Kernel
 TARGET_KERNEL_SOURCE := kernel/xiaomi/libra
-TARGET_KERNEL_CONFIG := libra_user_defconfig
-
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M  androidboot.selinux=permissive
-BOARD_DTBTOOL_ARGS := -2
-BOARD_KERNEL_IMAGE_NAME := Image
+TARGET_KERNEL_CONFIG := cyanogenmod_libra_defconfig
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-5 ramoops_memreserve=2M androidboot.selinux=permissive
+BOARD_KERNEL_SEPARATED_DT := true
 BOARD_KERNEL_BASE        := 0x00000000
 BOARD_KERNEL_PAGESIZE    := 4096
 BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
 BOARD_RAMDISK_OFFSET     := 0x02000000
-TARGETE_USES_UNCOMPRESSED_KERNEL := false
+TARGET_KERNEL_ARCH := arm64
+TARGET_KERNEL_HEADER_ARCH := arm64
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
+TARGET_USES_UNCOMPRESSED_KERNEL := true
+BOARD_DTBTOOL_ARGS := -2
+BOARD_KERNEL_IMAGE_NAME := Image
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864 #64M
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 67108864 #64M
