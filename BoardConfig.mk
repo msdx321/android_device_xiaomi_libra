@@ -172,8 +172,8 @@ MALLOC_IMPL := dlmalloc
 
 # CMHW
 BOARD_HARDWARE_CLASS := \
-    hardware/mokee/mkhw \
-    device/xiaomi/libra/mkhw
+    hardware/cyanogen/mkhw \
+    device/xiaomi/libra/cmhw
 
 # dt2w
 #TARGET_TAP_TO_WAKE_NODE := "/data/wake_gesture"
