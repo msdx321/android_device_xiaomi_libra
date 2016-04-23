@@ -172,7 +172,7 @@ MALLOC_IMPL := dlmalloc
 
 # CMHW
 BOARD_HARDWARE_CLASS := \
-    hardware/cyanogen/mkhw \
+    hardware/cyanogen/cmhw \
     device/xiaomi/libra/cmhw
 
 # dt2w
