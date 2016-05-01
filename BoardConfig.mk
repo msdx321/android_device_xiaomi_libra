@@ -232,8 +232,3 @@ BOARD_SEPOLICY_DIRS += device/xiaomi/libra/sepolicy
 
 #AnyKernel
 AK_BOOT_BLOCK := \/dev\/block\/bootdevice\/by-name\/boot
-do.devicecheck=1
-do.initd=1
-do.modules=0
-do.cleanup=1
-device.name1=libra
