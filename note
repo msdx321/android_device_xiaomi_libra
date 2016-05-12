@@ -1,0 +1,43 @@
+project frameworks/base/
+diff --git a/packages/SystemUI/src/com/android/systemui/doze/DozeService.java b/packages/SystemUI/src/com/android/systemui/doze/DozeService.java
+index f223400..f0f1296 100644
+--- a/packages/SystemUI/src/com/android/systemui/doze/DozeService.java
++++ b/packages/SystemUI/src/com/android/systemui/doze/DozeService.java
+@@ -580,6 +580,7 @@ public class DozeService extends DreamService {
+         protected static final int RESULT_NEAR = 1;
+         protected static final int RESULT_FAR = 2;
+ 
++       private static final float PROXIMITY_NEAR_THRESHOLD = 5.0f;
+         private final String mTag = DozeService.this.mTag + ".ProximityCheck";
+ 
+         private boolean mRegistered;
+@@ -611,8 +612,12 @@ public class DozeService extends DreamService {
+                 if (DEBUG) Log.d(mTag, "Event has no values!");
+                 finishWithResult(RESULT_UNKNOWN);
+             } else {
+-                if (DEBUG) Log.d(mTag, "Event: value=" + event.values[0] + " max=" + mMaxRange);
+-                final boolean isNear = event.values[0] < mMaxRange;
++               boolean isNear = true;
++               if (event.values[0] >= PROXIMITY_NEAR_THRESHOLD || event.values[0] >= mMaxRange){
++                       isNear = false;
++               }
++               if (DEBUG) Log.d(mTag, "Event: value=" + event.values[0] + "max=" + mMaxRange + "isNear=" +isNear);
++
+                 finishWithResult(isNear ? RESULT_NEAR : RESULT_FAR);
+             }
+         }
+
+project frameworks/native/
+diff --git a/services/sensorservice/SensorDevice.cpp b/services/sensorservice/SensorDevice.cpp
+index dd1bccf..1a26323 100644
+--- a/services/sensorservice/SensorDevice.cpp
++++ b/services/sensorservice/SensorDevice.cpp
+@@ -309,7 +309,8 @@ status_t SensorDevice::setDelay(void* ident, int handle, int64_t samplingPeriodN
+ 
+ int SensorDevice::getHalDeviceVersion() const {
+     if (!mSensorDevice) return -1;
+-    return mSensorDevice->common.version;
++    //return mSensorDevice->common.version;
++    return 1;
+ }
+

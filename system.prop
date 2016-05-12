@@ -243,7 +243,7 @@ persist.camera.HAL3.enabled=0
 persist.camera.gyro.android=1
 
 # IO scheduler
-sys.io.scheduler=bfq
+sys.io.scheduler=fiops
 
 # Dexopt
 ro.sys.fw.dex2oat_thread_count=4
@@ -270,4 +270,4 @@ keyguard.no_require_sim=true
 persist.radio.apm_sim_not_pwdn=1
 
 # Maintainer
-ro.mk.maintainer=wood
+ro.mk.maintainer=msdx321
