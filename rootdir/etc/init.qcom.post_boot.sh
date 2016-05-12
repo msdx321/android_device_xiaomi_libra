@@ -38,14 +38,34 @@ echo 0 > /sys/module/lpm_levels/system/a53/a53-l2-retention/idle_enabled
 echo 0 > /sys/module/lpm_levels/system/a57/a57-l2-retention/idle_enabled
 
 # configure governor settings for little cluster
-echo "smartmax" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo "interactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
+echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif
+echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
+echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
+echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+echo 80 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+echo 40000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+echo 80000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 echo 384000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 # online CPU4
 echo 1 > /sys/devices/system/cpu/cpu4/online
 # Best effort limiting for first time boot if msm_performance module is absent
 echo 960000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 # configure governor settings for big cluster
-echo "smartmax" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+echo "interactive" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_migration_notif
+echo 19000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/above_hispeed_delay
+echo 90 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load
+echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+echo 1248000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+echo 85 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+echo 40000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
+echo 80000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis
 echo 384000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
 # restore A57's max
 cat /sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_max_freq > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
@@ -73,7 +93,7 @@ echo 0 > /sys/module/lpm_levels/parameters/sleep_disabled
 # Restore CPU 4 max freq from msm_performance
 echo "4:4294967295 5:4294967295" > /sys/module/msm_performance/parameters/cpu_max_freq
 # input boost configuration
-echo 0:0 > /sys/module/cpu_boost/parameters/input_boost_freq
+echo 0:1248000 > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 # core_ctl module
 insmod /system/lib/modules/core_ctl.ko
