@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Edge Touch Changer</string>
+    <string name="edgemodeon">Edge Touch is enabled now.</string>
+    <string name="edgemodeoff">Edge Touch is disabled now.</string>
+    <string name="switchon">Enable Edge Touch</string>
+    <string name="switchoff">Disable Edge Touch</string>
+    <string name="nopermission">Please Grant Su Permissions</string>
+</resources>

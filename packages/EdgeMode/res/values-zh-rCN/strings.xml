@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">边缘触控切换</string>
+    <string name="edgemodeon">边缘触控已打开</string>
+    <string name="edgemodeoff">边缘触控已关闭</string>
+    <string name="switchon">启用边缘触控</string>
+    <string name="switchoff">关闭边缘触控</string>
+    <string name="nopermission">请授予SU权限</string>
+</resources>
